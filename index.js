@@ -29,6 +29,8 @@ async function run() {
 
     const coffeeCollection = client.db("coffeeDB").collection("coffee");
 
+    const userCollection = client.db("coffeeDB").collection("user");
+
     app.get("/coffee", async (req, res) => {
       const cursor = coffeeCollection.find();
       const result = await cursor.toArray();
@@ -76,6 +78,39 @@ async function run() {
       const result = await coffeeCollection.deleteOne(query);
       res.send(result);
       // console.log(id);
+    })
+
+    // User related api-----
+    app.get("/user", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.post("/user", async (req, res) => {
+      const userEmail = req.body;
+      console.log(userEmail);
+      const result = await userCollection.insertOne(userEmail);
+      res.send(result);
+    })
+
+    app.patch("/user", async (req, res) => {
+      const userInfo = req.body;
+      const filter = {email: userInfo.email}
+      const updateDoc = {
+        $set: {
+          lastLoggedAt: userInfo.lastLoggedAt
+        }
+      }
+      const result = await userCollection.updateOne(filter, updateDoc)
+      res.send(result);
+    })
+
+    app.delete("/user/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await userCollection.deleteOne(query)
+      res.send(result);
     })
 
     // Send a ping to confirm a successful connection
