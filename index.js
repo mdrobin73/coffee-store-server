@@ -131,5 +131,6 @@ app.get("/", (req, res) => {
 })
 
 app.listen(port, () => {
+  // Testing the server port
   console.log(`Coffee server is running on port: ${port}`)
 })
